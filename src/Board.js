@@ -4,17 +4,25 @@ class Board {
   }
 
   placePiece(canvas, event) {
-    var rect = canvas.getBoundingClientRect();
     const ctx = canvas.getContext("2d");
+    var rect = canvas.getBoundingClientRect();
 
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
-    console.log("Coordinate x: " + x, "Coordinate y: " + y);
+    // console.log("Coordinate x: " + x, "Coordinate y: " + y);
+
     ctx.beginPath();
-    ctx.arc(x, y, 25, 0, 2 * Math.PI);
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
     ctx.strokeStyle = "black";
     ctx.stroke();
-    ctx.fillStyle = "black";
+
+    if (this.turn === "b") {
+      ctx.fillStyle = "black";
+      this.turn = "w";
+    } else {
+      ctx.fillStyle = "white";
+      this.turn = "b";
+    }
     ctx.fill();
   }
 
@@ -27,14 +35,14 @@ class Board {
     ctx.strokeStyle = "black";
     ctx.beginPath();
 
-    for (var x = 0; x <= boardWidth; x += 50) {
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, boardWidth);
+    for (var x = 50; x <= boardWidth - 50; x += 50) {
+      ctx.moveTo(x, 50);
+      ctx.lineTo(x, boardWidth - 50);
     }
 
-    for (var y = 0; y <= boardWidth; y += 50) {
-      ctx.moveTo(0, y);
-      ctx.lineTo(boardWidth, y);
+    for (var y = 50; y <= boardWidth - 50; y += 50) {
+      ctx.moveTo(50, y);
+      ctx.lineTo(boardWidth - 50, y);
     }
 
     ctx.stroke();
