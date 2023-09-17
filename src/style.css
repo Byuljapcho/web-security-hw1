@@ -6,10 +6,6 @@
   text-align: center;
 }
 
-#play-btn {
-  text-align: center;
-}
-
 #board {
   text-align: center;
 }
@@ -17,4 +13,11 @@
 #canvas {
   background: #fff;
   margin: 20px;
+}
+
+.button {
+  display: block;
+  max-width: 300px;
+  text-align: center;
+  margin: auto;
 }
