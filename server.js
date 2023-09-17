@@ -8,10 +8,10 @@ const io = new Server(server, { allowEIO3: true });
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || 3000;
 
-app.use(express.static("public"));
+// app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "." });
+  res.send("Server connected");
 });
 
 io.on("connection", (socket) => {

@@ -1,0 +1,20 @@
+/* My styles */
+
+#title {
+  margin: auto;
+  width: 50%;
+  text-align: center;
+}
+
+#play-btn {
+  text-align: center;
+}
+
+#board {
+  text-align: center;
+}
+
+#canvas {
+  background: #fff;
+  margin: 20px;
+}

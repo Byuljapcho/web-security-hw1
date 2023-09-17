@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/src/go.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Five in a Row</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="title"><h1>Five in a Row</h1></div>
+    <div id="play-btn"><button>Play</button></div>
+    <div id="board">
+      <canvas
+        id="canvas"
+        style="border: 1px solid #ff0000"
+        width="950"
+        height="950"
+      ></canvas>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script type="module" src="./client.js"></script>
+  </body>
+</html>
