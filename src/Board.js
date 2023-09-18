@@ -1,6 +1,14 @@
 class Board {
   constructor() {
     this.turn = "b";
+    // keeping track of piece positions on the board
+    this.boardPos = [];
+    for (var i = 0; i < 19; i++) {
+      this.boardPos[i] = [];
+      for (var j = 0; j < 19; j++) {
+        this.boardPos[i][j] = false;
+      }
+    }
   }
 
   placePiece(canvas, event) {
@@ -9,34 +17,41 @@ class Board {
     var x = event.offsetX;
     var y = event.offsetY;
 
-    console.log("Offset x: " + x, "Offset y: " + y);
-
     var downX = Math.floor(x / 50);
     var downY = Math.floor(y / 50);
 
-    console.log("rounded down x: " + downX, "rounded down y: " + downY);
-
     var upX = Math.ceil(x / 50);
     var upY = Math.ceil(y / 50);
-    console.log("rounded up x: " + upX, "rounded up y: " + upY);
 
     var arcX;
     var arcY;
 
     if (Math.abs(downX * 50 - x) < Math.abs(upX * 50 - x)) {
-      arcX = downX * 50;
+      arcX = downX;
     } else {
-      arcX = upX * 50;
+      arcX = upX;
     }
 
     if (Math.abs(downY * 50 - y) < Math.abs(upY * 50 - y)) {
-      arcY = downY * 50;
+      arcY = downY;
     } else {
-      arcY = upY * 50;
+      arcY = upY;
     }
 
+    if (this.boardPos[arcX][arcY]) {
+      window.alert(
+        "There is already a piece here! Please choose an empty intersection."
+      );
+    } else {
+      this.drawPiece(ctx, arcX, arcY);
+    }
+  }
+
+  drawPiece(ctx, arcX, arcY) {
+    console.log("arcX: " + arcX + ", arcY: " + arcY);
+    this.boardPos[arcX][arcY] = true;
     ctx.beginPath();
-    ctx.arc(arcX, arcY, 20, 0, 2 * Math.PI);
+    ctx.arc(arcX * 50, arcY * 50, 20, 0, 2 * Math.PI);
     ctx.strokeStyle = "black";
     ctx.stroke();
     ctx.closePath();
