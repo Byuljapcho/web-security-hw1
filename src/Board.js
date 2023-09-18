@@ -5,16 +5,41 @@ class Board {
 
   placePiece(canvas, event) {
     const ctx = canvas.getContext("2d");
-    var rect = canvas.getBoundingClientRect();
 
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
-    // console.log("Coordinate x: " + x, "Coordinate y: " + y);
+    var x = event.offsetX;
+    var y = event.offsetY;
+
+    console.log("Offset x: " + x, "Offset y: " + y);
+
+    var downX = Math.floor(x / 50);
+    var downY = Math.floor(y / 50);
+
+    console.log("rounded down x: " + downX, "rounded down y: " + downY);
+
+    var upX = Math.ceil(x / 50);
+    var upY = Math.ceil(y / 50);
+    console.log("rounded up x: " + upX, "rounded up y: " + upY);
+
+    var arcX;
+    var arcY;
+
+    if (Math.abs(downX * 50 - x) < Math.abs(upX * 50 - x)) {
+      arcX = downX * 50;
+    } else {
+      arcX = upX * 50;
+    }
+
+    if (Math.abs(downY * 50 - y) < Math.abs(upY * 50 - y)) {
+      arcY = downY * 50;
+    } else {
+      arcY = upY * 50;
+    }
 
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.arc(arcX, arcY, 20, 0, 2 * Math.PI);
     ctx.strokeStyle = "black";
     ctx.stroke();
+    ctx.closePath();
 
     if (this.turn === "b") {
       ctx.fillStyle = "black";
