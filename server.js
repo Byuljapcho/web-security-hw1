@@ -8,8 +8,6 @@ const io = new Server(server, { allowEIO3: true });
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || 3000;
 
-// app.use(express.static("public"));
-
 app.get("/", (req, res) => {
   res.send("Server connected");
 });
