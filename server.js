@@ -140,11 +140,6 @@ class GameServer {
   checkDiagonal(data) {
     // check i,i pairs first
     for (var i = 1; i <= 16; i++) {
-      console.log(game.boardPos[i][i]);
-      console.log(game.boardPos[i + 1][i + 1]);
-      console.log(game.boardPos[i + 2][i + 2]);
-      console.log(game.boardPos[i + 3][i + 3]);
-      console.log(game.boardPos[i + 4][i + 4]);
       if (
         game.boardPos[i][i] === data.color &&
         game.boardPos[i + 1][i + 1] === data.color &&
@@ -158,37 +153,31 @@ class GameServer {
 
     // check for (2,1) and (3,2) and so on
     for (var i = 2; i <= 16; i++) {
-      console.log(game.boardPos[i][i - 1]);
-      console.log(game.boardPos[i + 1][i]);
-      console.log(game.boardPos[i + 2][i + 1]);
-      console.log(game.boardPos[i + 3][i + 2]);
-      console.log(game.boardPos[i + 4][i + 3]);
-      if (
-        game.boardPos[i][i - 1] === data.color &&
-        game.boardPos[i + 1][i] === data.color &&
-        game.boardPos[i + 2][i + 1] === data.color &&
-        game.boardPos[i + 3][i + 2] === data.color &&
-        game.boardPos[i + 4][i + 3] === data.color
-      ) {
-        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+      for (var j = 2; j <= 16; j++) {
+        if (
+          game.boardPos[i][j - 1] === data.color &&
+          game.boardPos[i + 1][j] === data.color &&
+          game.boardPos[i + 2][j + 1] === data.color &&
+          game.boardPos[i + 3][j + 2] === data.color &&
+          game.boardPos[i + 4][j + 3] === data.color
+        ) {
+          io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        }
       }
     }
 
     // check for (1,2) and (2,3) and so on
     for (var i = 1; i <= 15; i++) {
-      console.log(game.boardPos[i][i + 1]);
-      console.log(game.boardPos[i + 1][i + 2]);
-      console.log(game.boardPos[i + 2][i + 3]);
-      console.log(game.boardPos[i + 3][i + 4]);
-      console.log(game.boardPos[i + 4][i + 5]);
-      if (
-        game.boardPos[i][i + 1] === data.color &&
-        game.boardPos[i + 1][i + 2] === data.color &&
-        game.boardPos[i + 2][i + 3] === data.color &&
-        game.boardPos[i + 3][i + 4] === data.color &&
-        game.boardPos[i + 4][i + 5] === data.color
-      ) {
-        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+      for (var j = 1; j <= 15; j++) {
+        if (
+          game.boardPos[i][j + 1] === data.color &&
+          game.boardPos[i + 1][j + 2] === data.color &&
+          game.boardPos[i + 2][j + 3] === data.color &&
+          game.boardPos[i + 3][j + 4] === data.color &&
+          game.boardPos[i + 4][j + 5] === data.color
+        ) {
+          io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        }
       }
     }
   }
