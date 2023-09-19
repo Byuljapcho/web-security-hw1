@@ -118,10 +118,79 @@ class GameServer {
   checkWin(data) {
     this.checkHorizontal(data);
     this.checkVertical(data);
-    // this.checkDiagonal(data);
+    this.checkDiagonal(data);
   }
 
-  checkDiagonal(data) {}
+  checkDiagonal(data) {
+    // check 1-1 pairs first
+    for (var i = 1; i <= 16; i++) {
+      console.log("checking win!");
+      console.log(game.boardPos[i][i]);
+      console.log(game.boardPos[i + 1][i + 1]);
+      console.log(game.boardPos[i + 2][i + 2]);
+      console.log(game.boardPos[i + 3][i + 3]);
+      console.log(game.boardPos[i + 4][i + 4]);
+      if (
+        game.boardPos[i][i] === data.color &&
+        game.boardPos[i + 1][i + 1] === data.color &&
+        game.boardPos[i + 2][i + 2] === data.color &&
+        game.boardPos[i + 3][i + 3] === data.color &&
+        game.boardPos[i + 4][i + 4] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should reset game
+      }
+    }
+
+    // check for (2,1) and (3,2) and so on
+    for (var i = 2; i <= 16; i++) {
+      console.log("checking win!");
+      console.log(game.boardPos[i][i - 1]);
+      console.log(game.boardPos[i + 1][i]);
+      console.log(game.boardPos[i + 2][i + 1]);
+      console.log(game.boardPos[i + 3][i + 2]);
+      console.log(game.boardPos[i + 4][i + 3]);
+      if (
+        game.boardPos[i][i - 1] === data.color &&
+        game.boardPos[i + 1][i] === data.color &&
+        game.boardPos[i + 2][i + 1] === data.color &&
+        game.boardPos[i + 3][i + 2] === data.color &&
+        game.boardPos[i + 4][i + 3] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should reset game
+      }
+    }
+
+    // check for (1,2) and (2,3) and so on
+    for (var i = 1; i <= 15; i++) {
+      console.log("checking win!");
+      console.log(game.boardPos[i][i + 1]);
+      console.log(game.boardPos[i + 1][i + 2]);
+      console.log(game.boardPos[i + 2][i + 3]);
+      console.log(game.boardPos[i + 3][i + 4]);
+      console.log(game.boardPos[i + 4][i + 5]);
+      if (
+        game.boardPos[i][i + 1] === data.color &&
+        game.boardPos[i + 1][i + 2] === data.color &&
+        game.boardPos[i + 2][i + 3] === data.color &&
+        game.boardPos[i + 3][i + 4] === data.color &&
+        game.boardPos[i + 4][i + 5] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should reset game
+      }
+    }
+  }
 
   checkVertical(data) {
     // check each row vertically

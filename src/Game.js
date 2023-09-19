@@ -51,6 +51,7 @@ class Game {
     });
     this.socket.on("drawPiece", (data) => {
       this.drawPiece(data.x, data.y, data.color);
+      console.log(data.x, data.y);
       this.socket.emit("checkWin", {
         x: data.x,
         y: data.y,
