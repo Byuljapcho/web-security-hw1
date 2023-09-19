@@ -1,8 +1,10 @@
 import Board from "./Board";
+import { io } from "socket.io-client";
 
 class Game {
   constructor() {
     this.board = new Board();
+    const socket = io("http://localhost:3000", { transports: ["websocket"] });
   }
 
   checkPlayers() {
