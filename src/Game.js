@@ -14,7 +14,6 @@ class Game {
   }
 
   assignColor() {
-    console.log("assignColor: %s", this.socket.id);
     if (this.playerOne.id === this.socket.id) {
       window.alert("Player 1 - playing black");
     } else if (this.playerTwo && this.playerTwo.id === this.socket.id) {
@@ -26,7 +25,6 @@ class Game {
     this.socket.off("connect");
     this.socket.off("disconnect");
     this.socket.off("updateConnection");
-    this.socket.off("updateGame");
     this.socket.off("boardHasTwoPlayers");
     this.board = new Board();
     this.isOver = false;
@@ -41,9 +39,9 @@ class Game {
     this.socket.on("connect", this.connect.bind(this));
     this.socket.on("disconnect", this.disconnect.bind(this));
     this.socket.on("updateConnection", this.updateConnection.bind(this));
-    this.socket.on("updateGameData", this.updateGameData.bind(this));
     this.socket.on("boardHasTwoPlayers", this.boardHasTwoPlayers.bind(this));
     this.socket.on("assignColor", this.assignColor.bind(this));
+    this.socket.on("createBoard", this.board.createBoard.bind(this));
     this.socket.on("sendErrorMsg", (msg, id) => {
       if (this.socket.id === id) {
         window.alert(msg);
@@ -61,14 +59,21 @@ class Game {
     });
     this.socket.on("announceWin", (data) => {
       if (this.socket.id === data.id) {
-        window.alert("You win! Congrats. Game Over.");
+        window.alert(
+          "You win! Congrats. Game Over. Board will be cleared for new game. Please click OK and wait a few seconds."
+        );
       } else {
         if (data.color === "b") {
-          window.alert(`Player 1 - black wins! Game over.`);
+          window.alert(
+            `Player 1 - black wins! Game over. Board will be cleared for new game. Please click OK and wait a few seconds`
+          );
         } else {
-          window.alert(`Player 2 - white wins! Game over.`);
+          window.alert(
+            `Player 2 - white wins! Game over. Board will be cleared for new game. Please click OK and wait a few seconds`
+          );
         }
       }
+      this.socket.emit("resetGame");
     });
   }
 
@@ -77,7 +82,6 @@ class Game {
     this.status = "connected";
     if (this.firstSocketId === null) {
       this.firstSocketId = this.socket.id;
-      console.log("firstSocketId", this.firstSocketId);
       this.socket.emit("join");
     }
   }
@@ -88,18 +92,8 @@ class Game {
   }
 
   updateConnection(connections) {
-    console.log("update connections");
-    console.log(connections);
     this.playerOne = connections.playerOne;
     this.playerTwo = connections.playerTwo;
-  }
-
-  updateGameData(gameData) {
-    console.log("update game data");
-    console.log(gameData);
-    this.board.updateBoardPos(gameData.boardPos);
-    this.isOver = gameData.isOver;
-    this.board.updateTurn(gameData.turn);
   }
 
   boardHasTwoPlayers() {

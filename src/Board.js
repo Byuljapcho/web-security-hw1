@@ -1,27 +1,5 @@
 class Board {
-  constructor() {
-    this.turn = "b";
-    this.over = false;
-
-    // keeping track of all piece positions on the board
-    this.boardPos = [];
-    for (var i = 1; i < 21; i++) {
-      this.boardPos[i] = [];
-      for (var j = 1; j < 21; j++) {
-        this.boardPos[i][j] = false;
-      }
-    }
-  }
-
-  updateBoardPos(update) {
-    // console.log("update", update);
-    this.boardPos = update;
-  }
-
-  updateTurn(update) {
-    // console.log("update", update);
-    this.turn = update;
-  }
+  constructor() {}
 
   drawPiece(ctx, arcX, arcY, color) {
     ctx.beginPath();
@@ -42,6 +20,7 @@ class Board {
   createBoard() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     var boardWidth = canvas.width;
 
