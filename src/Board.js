@@ -41,45 +41,6 @@ class Board {
     this.turn = update;
   }
 
-  placePiece(canvas, event) {
-    const ctx = canvas.getContext("2d");
-
-    var x = event.offsetX;
-    var y = event.offsetY;
-
-    var downX = Math.floor(x / 50);
-    var downY = Math.floor(y / 50);
-
-    var upX = Math.ceil(x / 50);
-    var upY = Math.ceil(y / 50);
-
-    var arcX;
-    var arcY;
-
-    if (Math.abs(downX * 50 - x) < Math.abs(upX * 50 - x)) {
-      arcX = downX;
-    } else {
-      arcX = upX;
-    }
-
-    if (Math.abs(downY * 50 - y) < Math.abs(upY * 50 - y)) {
-      arcY = downY;
-    } else {
-      arcY = upY;
-    }
-
-    if (arcX > 0 && arcX < 21 && arcY > 0 && arcY < 21) {
-      if (this.boardPos[arcX][arcY]) {
-        window.alert(
-          "There is already a piece here! Please choose an empty intersection."
-        );
-      } else {
-        this.drawPiece(ctx, arcX, arcY);
-        this.checkWin();
-      }
-    }
-  }
-
   checkWin() {
     this.checkVertical();
     this.checkHorizontal();
@@ -148,25 +109,19 @@ class Board {
     }
   }
 
-  drawPiece(ctx, arcX, arcY) {
-    console.log(`arcX: ${arcX} arcY: ${arcY}`);
-    this.boardPos[arcX][arcY] = true;
+  drawPiece(ctx, arcX, arcY, color) {
     ctx.beginPath();
     ctx.arc(arcX * 50, arcY * 50, 20, 0, 2 * Math.PI);
     ctx.strokeStyle = "black";
     ctx.stroke();
     ctx.closePath();
 
-    if (this.turn === "b") {
+    if (color === "b") {
       ctx.fillStyle = "black";
       ctx.fill();
-      this.turn = "w";
-      this.blackPos[arcX][arcY] = true;
-    } else {
+    } else if (color === "w") {
       ctx.fillStyle = "white";
       ctx.fill();
-      this.turn = "b";
-      this.whitePos[arcX][arcY] = true;
     }
   }
 
