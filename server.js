@@ -31,9 +31,6 @@ class GameServer {
     this.connectionOne = { color: "black", id: -1 };
     this.connectionTwo = { color: "white", id: -1 };
     this.boardPos = [];
-    this.blackPos = [];
-    this.whitePos = [];
-
     this.turn = "b";
     this.isOver = false;
   }
@@ -62,21 +59,7 @@ class GameServer {
     for (var i = 1; i < 21; i++) {
       this.boardPos[i] = [];
       for (var j = 1; j < 21; j++) {
-        this.boardPos[i][j] = false;
-      }
-    }
-
-    for (var i = 1; i < 21; i++) {
-      this.blackPos[i] = [];
-      for (var j = 1; j < 21; j++) {
-        this.blackPos[i][j] = false;
-      }
-    }
-
-    for (var i = 1; i < 21; i++) {
-      this.whitePos[i] = [];
-      for (var j = 1; j < 21; j++) {
-        this.whitePos[i][j] = false;
+        this.boardPos[i][j] = null;
       }
     }
   }
@@ -101,8 +84,6 @@ class GameServer {
     this.connectionOne = { color: "black", id: -1 };
     this.connectionTwo = { color: "white", id: -1 };
     this.boardPos = [];
-    this.blackPos = [];
-    this.whitePos = [];
 
     this.turn = "b";
     this.isOver = false;
@@ -113,17 +94,24 @@ class GameServer {
 
   placePiece(arcX, arcY, id) {
     if (this.turn === "b") {
-      io.sockets.emit("drawPiece", { x: arcX, y: arcY, color: "b" });
+      io.sockets.emit("drawPiece", {
+        x: arcX,
+        y: arcY,
+        color: "b",
+        socketId: id,
+      });
+      this.boardPos[arcX][arcY] = "b";
       this.turn = "w";
-      console.log("changed turn to white");
-      this.blackPos[arcX][arcY] = true;
     } else if (this.turn === "w") {
-      io.sockets.emit("drawPiece", { x: arcX, y: arcY, color: "w" });
+      io.sockets.emit("drawPiece", {
+        x: arcX,
+        y: arcY,
+        color: "w",
+        socketId: id,
+      });
       this.turn = "b";
-      console.log("changed turn to black");
-      this.whitePos[arcX][arcY] = true;
+      this.boardPos[arcX][arcY] = "w";
     }
-    this.boardPos[arcX][arcY] = true;
     io.sockets.emit("updateGameData", game.getGameData());
   }
 }
@@ -131,11 +119,38 @@ class GameServer {
 var game = new GameServer();
 
 io.sockets.on("connect", function (socket) {
+  socket.on("checkWin", function (data) {
+    // piece position
+    var row = data.y;
+    var col = data.x;
+    console.log(row, col);
+    console.log(data.color);
+    // check in row and col and also diagonoally from its position
+    // checking row first
+    if (col >= 1 && col <= 16) {
+      console.log("checking win!");
+      console.log(game.boardPos[col][row]);
+      console.log(game.boardPos[col + 1][row]);
+      console.log(game.boardPos[col + 2][row]);
+      console.log(game.boardPos[col + 3][row]);
+      console.log(game.boardPos[col + 4][row]);
+      if (
+        game.boardPos[col][row] === data.color &&
+        game.boardPos[col + 1][row] === data.color &&
+        game.boardPos[col + 2][row] === data.color &&
+        game.boardPos[col + 3][row] === data.color &&
+        game.boardPos[col + 4][row] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should clean up
+      }
+    }
+  });
+
   socket.on("checkIfIllegalMove", function (data) {
-    console.log(data);
-    console.log("y", data.y);
-    console.log(game.boardPos);
-    console.log(game.boardPos[data.x][data.y]);
     // illegal to place piece if not your turn yet
     if (
       (game.turn === "b" && data.id !== game.connectionOne.id) ||
@@ -176,31 +191,11 @@ io.sockets.on("connect", function (socket) {
     } else {
       game.init();
       game.addConnection(socket.id);
-      console.log("added", socket.id);
-      console.log("pineapple", game.boardPos);
       io.sockets.emit("updateConnection", game.getConnections());
       io.sockets.emit("updateGameData", game.getGameData());
       io.sockets.emit("assignColor");
     }
   });
-
-  // socket.on("move", function (data) {
-  //   if (game.isNotAuthorizedPlayer(data.id)) {
-  //     io.sockets.emit("boardHasTwoPlayers");
-  //   }
-
-  //   game.move(data.row, data.col, data.color, data.id);
-
-  //   if (game.hasWinner(payload.row, payload.col, payload.color)) {
-  //     game.isFinished = true;
-  //     io.sockets.emit("hasWinner", { name: game.getConnectionName(socket.id) });
-  //   } else if (game.isBoardFull()) {
-  //     game.isFinished = true;
-  //     io.sockets.emit("boardIsFull");
-  //   }
-
-  //   io.sockets.emit("updateGame", game.getGameData());
-  // });
 });
 
 server.listen(port, () => {

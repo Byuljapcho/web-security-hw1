@@ -11,24 +11,6 @@ class Board {
         this.boardPos[i][j] = false;
       }
     }
-
-    // keeping track of black pieces positions on the board
-    this.blackPos = [];
-    for (var i = 1; i < 21; i++) {
-      this.blackPos[i] = [];
-      for (var j = 1; j < 21; j++) {
-        this.blackPos[i][j] = false;
-      }
-    }
-
-    // keeping track of white pieces positions on the board
-    this.whitePos = [];
-    for (var i = 1; i < 21; i++) {
-      this.whitePos[i] = [];
-      for (var j = 1; j < 21; j++) {
-        this.whitePos[i][j] = false;
-      }
-    }
   }
 
   updateBoardPos(update) {
@@ -39,74 +21,6 @@ class Board {
   updateTurn(update) {
     // console.log("update", update);
     this.turn = update;
-  }
-
-  checkWin() {
-    this.checkVertical();
-    this.checkHorizontal();
-    this.checkDiagonal();
-  }
-
-  checkDiagonal() {}
-
-  checkHorizontal() {
-    // starting with black
-    for (var i = 1; i < 21; i++) {
-      for (var j = 1; j < 21; j++) {
-        if (j >= 1 && j <= 16) {
-          if (
-            this.blackPos[j][i] &&
-            this.blackPos[j + 1][i] &&
-            this.blackPos[j + 2][i] &&
-            this.blackPos[j + 3][i] &&
-            this.blackPos[j + 4][i]
-          ) {
-            window.alert("Player 1 - black wins!");
-          }
-        }
-      }
-    }
-
-    // checking white
-    for (var i = 1; i < 21; i++) {
-      var counter = 0;
-      for (var j = 1; j < 21; j++) {
-        if (this.whitePos[j][i]) {
-          counter++;
-        }
-      }
-      if (counter === 5) {
-        window.alert("Player 2 - white wins!");
-      }
-    }
-  }
-
-  checkVertical() {
-    // starting with black
-    for (var i = 1; i < 21; i++) {
-      var counter = 0;
-      for (var j = 1; j < 21; j++) {
-        if (this.blackPos[i][j]) {
-          counter++;
-        }
-      }
-      if (counter === 5) {
-        window.alert("Player 1 - black wins!");
-      }
-    }
-
-    // checking white
-    for (var i = 1; i < 21; i++) {
-      var counter = 0;
-      for (var j = 1; j < 21; j++) {
-        if (this.whitePos[i][j]) {
-          counter++;
-        }
-      }
-      if (counter === 5) {
-        window.alert("Player 2 - white wins!");
-      }
-    }
   }
 
   drawPiece(ctx, arcX, arcY, color) {

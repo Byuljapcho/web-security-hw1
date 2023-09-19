@@ -25,10 +25,8 @@ class Game {
   cleanUp() {
     this.socket.off("connect");
     this.socket.off("disconnect");
-    this.socket.off("throw");
     this.socket.off("updateConnection");
     this.socket.off("updateGame");
-    this.socket.off("hasWinner");
     this.socket.off("boardHasTwoPlayers");
     this.board = new Board();
     this.isOver = false;
@@ -44,7 +42,6 @@ class Game {
     this.socket.on("disconnect", this.disconnect.bind(this));
     this.socket.on("updateConnection", this.updateConnection.bind(this));
     this.socket.on("updateGameData", this.updateGameData.bind(this));
-    this.socket.on("hasWinner", this.hasWinner.bind(this));
     this.socket.on("boardHasTwoPlayers", this.boardHasTwoPlayers.bind(this));
     this.socket.on("assignColor", this.assignColor.bind(this));
     this.socket.on("sendErrorMsg", (msg, id) => {
@@ -56,6 +53,24 @@ class Game {
     });
     this.socket.on("drawPiece", (data) => {
       this.drawPiece(data.x, data.y, data.color);
+      this.socket.emit("checkWin", {
+        x: data.x,
+        y: data.y,
+        color: data.color,
+        id: data.socketId,
+      });
+    });
+    this.socket.on("announceWin", (data) => {
+      console.log("hello");
+      if (this.socket.id === data.id) {
+        window.alert("You win! Congrats. Game Over.");
+      } else {
+        if (data.color === "b") {
+          window.alert(`Player 1 - black wins! Game over.`);
+        } else {
+          window.alert(`Player 2 - white wins! Game over.`);
+        }
+      }
     });
   }
 
@@ -93,14 +108,6 @@ class Game {
   boardHasTwoPlayers() {
     if (this.playerOne === null && this.playerTwo === null) {
       window.alert("Game already has two players!");
-    }
-  }
-
-  hasWinner(winner) {
-    const user = this.getCurrentUser();
-
-    if (user.isPlayer || user.isWatcher) {
-      this.openDlg("Winner is " + winner.name, "");
     }
   }
 
