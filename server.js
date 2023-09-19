@@ -151,8 +151,17 @@ io.sockets.on("connect", function (socket) {
   });
 
   socket.on("checkIfIllegalMove", function (data) {
+    // illegal to start if second player has not joined
+    console.log(17, game.connectionTwo.id);
+    if (game.connectionTwo.id === -1) {
+      io.sockets.emit(
+        "sendErrorMsg",
+        "Second player has not joined. Game cannot start unless it has two players.",
+        data.id
+      );
+    }
     // illegal to place piece if not your turn yet
-    if (
+    else if (
       (game.turn === "b" && data.id !== game.connectionOne.id) ||
       (game.turn === "w" && data.id !== game.connectionTwo.id)
     ) {

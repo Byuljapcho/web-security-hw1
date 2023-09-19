@@ -45,8 +45,6 @@ class Game {
     this.socket.on("boardHasTwoPlayers", this.boardHasTwoPlayers.bind(this));
     this.socket.on("assignColor", this.assignColor.bind(this));
     this.socket.on("sendErrorMsg", (msg, id) => {
-      console.log(1, this.socket.id);
-      console.log(2, id);
       if (this.socket.id === id) {
         window.alert(msg);
       }
@@ -61,7 +59,6 @@ class Game {
       });
     });
     this.socket.on("announceWin", (data) => {
-      console.log("hello");
       if (this.socket.id === data.id) {
         window.alert("You win! Congrats. Game Over.");
       } else {
@@ -77,7 +74,6 @@ class Game {
   connect() {
     console.log("Connected: %s", this.socket.id);
     this.status = "connected";
-    console.log("yummy");
     if (this.firstSocketId === null) {
       this.firstSocketId = this.socket.id;
       console.log("firstSocketId", this.firstSocketId);
