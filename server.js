@@ -114,45 +114,77 @@ class GameServer {
     }
     io.sockets.emit("updateGameData", game.getGameData());
   }
+
+  checkWin(data) {
+    this.checkHorizontal(data);
+    this.checkVertical(data);
+    // this.checkDiagonal(data);
+  }
+
+  checkDiagonal(data) {}
+
+  checkVertical(data) {
+    // check each row vertically
+    var col = data.x;
+    for (var i = 1; i <= 16; i++) {
+      console.log("checking win!");
+      console.log(game.boardPos[col][i]);
+      console.log(game.boardPos[col][i + 1]);
+      console.log(game.boardPos[col][i + 2]);
+      console.log(game.boardPos[col][i + 3]);
+      console.log(game.boardPos[col][i + 4]);
+      if (
+        game.boardPos[col][i] === data.color &&
+        game.boardPos[col][i + 1] === data.color &&
+        game.boardPos[col][i + 2] === data.color &&
+        game.boardPos[col][i + 3] === data.color &&
+        game.boardPos[col][i + 4] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should reset game
+      }
+    }
+  }
+
+  checkHorizontal(data) {
+    // check each row horizontally
+    var row = data.y;
+    for (var i = 1; i <= 16; i++) {
+      console.log("checking win!");
+      console.log(game.boardPos[i][row]);
+      console.log(game.boardPos[i + 1][row]);
+      console.log(game.boardPos[i + 2][row]);
+      console.log(game.boardPos[i + 3][row]);
+      console.log(game.boardPos[i + 4][row]);
+      if (
+        game.boardPos[i][row] === data.color &&
+        game.boardPos[i + 1][row] === data.color &&
+        game.boardPos[i + 2][row] === data.color &&
+        game.boardPos[i + 3][row] === data.color &&
+        game.boardPos[i + 4][row] === data.color
+      ) {
+        console.log("win confirmed");
+        io.sockets.emit("announceWin", { color: data.color, id: data.id });
+        console.log(`${data.color} wins!`);
+        game.isOver = true;
+        // should reset game
+      }
+    }
+  }
 }
 
 var game = new GameServer();
 
 io.sockets.on("connect", function (socket) {
   socket.on("checkWin", function (data) {
-    // piece position
-    var row = data.y;
-    var col = data.x;
-    console.log(row, col);
-    console.log(data.color);
-    // check in row and col and also diagonoally from its position
-    // checking row first
-    if (col >= 1 && col <= 16) {
-      console.log("checking win!");
-      console.log(game.boardPos[col][row]);
-      console.log(game.boardPos[col + 1][row]);
-      console.log(game.boardPos[col + 2][row]);
-      console.log(game.boardPos[col + 3][row]);
-      console.log(game.boardPos[col + 4][row]);
-      if (
-        game.boardPos[col][row] === data.color &&
-        game.boardPos[col + 1][row] === data.color &&
-        game.boardPos[col + 2][row] === data.color &&
-        game.boardPos[col + 3][row] === data.color &&
-        game.boardPos[col + 4][row] === data.color
-      ) {
-        console.log("win confirmed");
-        io.sockets.emit("announceWin", { color: data.color, id: data.id });
-        console.log(`${data.color} wins!`);
-        game.isOver = true;
-        // should clean up
-      }
-    }
+    game.checkWin(data);
   });
 
   socket.on("checkIfIllegalMove", function (data) {
     // illegal to start if second player has not joined
-    console.log(17, game.connectionTwo.id);
     if (game.connectionTwo.id === -1) {
       io.sockets.emit(
         "sendErrorMsg",
