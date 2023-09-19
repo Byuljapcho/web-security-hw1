@@ -31,6 +31,16 @@ class Board {
     }
   }
 
+  updateBoardPos(update) {
+    // console.log("update", update);
+    this.boardPos = update;
+  }
+
+  updateTurn(update) {
+    // console.log("update", update);
+    this.turn = update;
+  }
+
   placePiece(canvas, event) {
     const ctx = canvas.getContext("2d");
 
